@@ -2,7 +2,7 @@
 gradle/
 .gradlew
 gradlew.bat
-run-simulations.sh
+run-simulation.sh
 .idea/
 # Created by .ignore support plugin (hsz.mobi)
 ### Gradle template
