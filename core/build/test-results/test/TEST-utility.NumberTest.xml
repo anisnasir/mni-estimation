@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="utility.NumberTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-06-23T19:23:02" hostname="nb0227.mydomain.example" time="0.001">
-  <properties/>
-  <testcase name="test" classname="utility.NumberTest" time="0.001"/>
-  <system-out><![CDATA[79420432
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
