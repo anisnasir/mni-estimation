@@ -46,3 +46,17 @@ project('topk-mni') {
     }
 }
 
+project('topk-grami-patterns') {
+    description = ""
+    dependencies {
+        compile(project(':topk-core'))
+    }
+}
+
+project('topk-grami-subgraphs') {
+    description = ""
+    dependencies {
+        compile(project(':topk-core'))
+    }
+}
+

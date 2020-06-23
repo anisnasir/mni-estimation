@@ -8,5 +8,7 @@ include 'core'
 include 'four-node'
 include 'three-node'
 include 'mni'
+include 'grami-patterns'
+include 'grami-subgraphs'
 
 prefix(rootProject.name)
