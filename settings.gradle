@@ -4,7 +4,7 @@ def prefix(prefix) {
 }
 rootProject.name = 'topk'
 
-include 'domain'
+include 'core'
 include 'four-node'
 include 'three-node'
 include 'mni'

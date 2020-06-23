@@ -21,28 +21,28 @@ subprojects {
     }
 }
 
-project('topk-domain') {
+project('topk-core') {
     description = ""
 }
 
 project('topk-four-node') {
     description = ""
     dependencies {
-        compile(project(':topk-domain'))
+        compile(project(':topk-core'))
     }
 }
 
 project('topk-three-node') {
     description = ""
     dependencies {
-        compile(project(':topk-domain'))
+        compile(project(':topk-core'))
     }
 }
 
 project('topk-mni') {
     description = ""
     dependencies {
-        compile(project(':topk-domain'))
+        compile(project(':topk-core'))
     }
 }
 
