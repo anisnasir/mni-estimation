@@ -1,14 +1,16 @@
 .DS_Store
-*/build
-gradle/
-.gradlew
-gradlew.bat
+
 run-simulation.sh
+
 .idea/
 # Created by .ignore support plugin (hsz.mobi)
 ### Gradle template
 .gradle
 /build/
+*/build
+gradle/
+.gradlew
+gradlew.bat
 
 # Ignore Gradle GUI config
 gradle-app.setting
