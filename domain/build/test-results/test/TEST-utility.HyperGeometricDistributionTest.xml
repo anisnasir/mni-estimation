@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="utility.HyperGeometricDistributionTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-06-23T19:23:02" hostname="nb0227.mydomain.example" time="0.019">
+  <properties/>
+  <testcase name="test" classname="utility.HyperGeometricDistributionTest" time="0.019"/>
+  <system-out><![CDATA[0.6623715415019762
+0.30640316205533596
+0.7660079051383399
+0.9687747035573122
+0.9988142292490119
+0.9988142292490119
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

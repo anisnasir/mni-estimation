@@ -1,0 +1,12 @@
+def prefix(prefix) {
+    rootProject.name = prefix
+    rootProject.children.each { it.name = "${prefix}-${it.name}" }
+}
+rootProject.name = 'topk'
+
+include 'domain'
+include 'four-node'
+include 'three-node'
+include 'mni'
+
+prefix(rootProject.name)

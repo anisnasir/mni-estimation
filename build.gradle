@@ -1,0 +1,48 @@
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+    apply plugin: 'java'
+
+    group = 'kth.scs'
+    version = '1.0.0'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+        compile group: 'com.clearspring.analytics', name: 'stream', version:'2.7.0'
+        compile group: 'org.apache.commons', name: 'commons-math3', version:'3.6.1'
+        compile group: 'commons-lang', name: 'commons-lang', version:'2.6'
+        compile group: 'com.google.guava', name: 'guava', version:'17.0'
+        compile group: 'net.sf.trove4j', name: 'trove4j', version: '3.0.3'
+        compile group: 'com.beust', name: 'jcommander', version: '1.78'
+        testCompile group: 'junit', name: 'junit', version:'4.12'
+    }
+}
+
+project('topk-domain') {
+    description = ""
+}
+
+project('topk-four-node') {
+    description = ""
+    dependencies {
+        compile(project(':topk-domain'))
+    }
+}
+
+project('topk-three-node') {
+    description = ""
+    dependencies {
+        compile(project(':topk-domain'))
+    }
+}
+
+project('topk-mni') {
+    description = ""
+    dependencies {
+        compile(project(':topk-domain'))
+    }
+}
+

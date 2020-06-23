@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="utility.AdvancedSubgraphReservoirTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-06-23T19:23:02" hostname="nb0227.mydomain.example" time="0.001">
+  <properties/>
+  <testcase name="test" classname="utility.AdvancedSubgraphReservoirTest" time="0.001"/>
+  <system-out><![CDATA[{Triplet [numEdges=3, nodeA=120 1, nodeB=130 2, nodeC=140 3, edgeA=StreamEdge{src=120, srcLabel=1, dest=130, dstLabel=2}, edgeB=StreamEdge{src=120, srcLabel=1, dest=140, dstLabel=3}, edgeC=StreamEdge{src=130, srcLabel=2, dest=140, dstLabel=3}], Triplet [numEdges=2, nodeA=120 1, nodeB=130 2, nodeC=140 3, edgeA=StreamEdge{src=120, srcLabel=1, dest=130, dstLabel=2}, edgeB=StreamEdge{src=120, srcLabel=1, dest=140, dstLabel=3}, edgeC=null]}
+{Triplet [numEdges=3, nodeA=120 1, nodeB=130 2, nodeC=140 3, edgeA=StreamEdge{src=120, srcLabel=1, dest=130, dstLabel=2}, edgeB=StreamEdge{src=120, srcLabel=1, dest=140, dstLabel=3}, edgeC=StreamEdge{src=130, srcLabel=2, dest=140, dstLabel=3}], Triplet [numEdges=2, nodeA=120 1, nodeB=130 2, nodeC=140 3, edgeA=StreamEdge{src=120, srcLabel=1, dest=130, dstLabel=2}, edgeB=StreamEdge{src=120, srcLabel=1, dest=140, dstLabel=3}, edgeC=null]}
+{Triplet [numEdges=3, nodeA=120 1, nodeB=130 2, nodeC=140 3, edgeA=StreamEdge{src=120, srcLabel=1, dest=130, dstLabel=2}, edgeB=StreamEdge{src=120, srcLabel=1, dest=140, dstLabel=3}, edgeC=StreamEdge{src=130, srcLabel=2, dest=140, dstLabel=3}], Triplet [numEdges=2, nodeA=120 1, nodeB=130 2, nodeC=140 3, edgeA=StreamEdge{src=120, srcLabel=1, dest=130, dstLabel=2}, edgeB=StreamEdge{src=120, srcLabel=1, dest=140, dstLabel=3}, edgeC=null]}
+{Triplet [numEdges=2, nodeA=120 1, nodeB=130 2, nodeC=140 3, edgeA=StreamEdge{src=120, srcLabel=1, dest=130, dstLabel=2}, edgeB=StreamEdge{src=120, srcLabel=1, dest=140, dstLabel=3}, edgeC=null]}
+{Triplet [numEdges=2, nodeA=120 1, nodeB=130 2, nodeC=140 3, edgeA=StreamEdge{src=120, srcLabel=1, dest=130, dstLabel=2}, edgeB=StreamEdge{src=120, srcLabel=1, dest=140, dstLabel=3}, edgeC=null]}
+{Triplet [numEdges=2, nodeA=120 1, nodeB=130 2, nodeC=140 3, edgeA=StreamEdge{src=120, srcLabel=1, dest=130, dstLabel=2}, edgeB=StreamEdge{src=120, srcLabel=1, dest=140, dstLabel=3}, edgeC=null]}
+{}
+{}
+{}
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

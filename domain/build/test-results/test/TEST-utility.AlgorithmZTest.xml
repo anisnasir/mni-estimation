@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="utility.AlgorithmZTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-06-23T19:23:02" hostname="nb0227.mydomain.example" time="0.021">
+  <properties/>
+  <testcase name="test" classname="utility.AlgorithmZTest" time="0.021"/>
+  <system-out><![CDATA[execution time: 270
+execution time: 20377
+reservoir 996 skip counter 1011
+skipped 1007177 total skipped 999004
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="utility.QuadripletGeneratorTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2020-06-23T19:23:02" hostname="nb0227.mydomain.example" time="0.006">
+  <properties/>
+  <testcase name="oppositeTailedTriangle" classname="utility.QuadripletGeneratorTest" time="0.003"/>
+  <testcase name="starAndTwoLines" classname="utility.QuadripletGeneratorTest" time="0.0"/>
+  <testcase name="clique" classname="utility.QuadripletGeneratorTest" time="0.001"/>
+  <testcase name="OppositeStar" classname="utility.QuadripletGeneratorTest" time="0.0"/>
+  <testcase name="failedTestWithWedge" classname="utility.QuadripletGeneratorTest" time="0.0"/>
+  <testcase name="line" classname="utility.QuadripletGeneratorTest" time="0.001"/>
+  <testcase name="star" classname="utility.QuadripletGeneratorTest" time="0.0"/>
+  <testcase name="cycle" classname="utility.QuadripletGeneratorTest" time="0.0"/>
+  <testcase name="line2" classname="utility.QuadripletGeneratorTest" time="0.0"/>
+  <testcase name="failedTestWithTriangle" classname="utility.QuadripletGeneratorTest" time="0.001"/>
+  <testcase name="tailedTriangle" classname="utility.QuadripletGeneratorTest" time="0.0"/>
+  <testcase name="quasiClique" classname="utility.QuadripletGeneratorTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
