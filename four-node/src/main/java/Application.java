@@ -1,7 +1,23 @@
-import java.io.BufferedReader;
+import com.beust.jcommander.JCommander;
+import fullydynamic.FullyDynamicEdgeReservoirFourNode;
+import fullydynamic.FullyDynamicExhaustiveCountingFourNode;
+import fullydynamic.FullyDynamicSubgraphReservoirFourNode;
+import gnu.trove.map.hash.THashMap;
+import incremental.IncrementalEdgeReservoirFourNode;
+import incremental.IncrementalExhaustiveCountingFourNode;
+import incremental.IncrementalSubgraphReservoirFourNode;
+import input.InputParameters;
+import input.StreamEdge;
+import input.StreamEdgeReader;
+import slidingwindow.FixedSizeSlidingWindow;
+import topkgraphpattern.Pattern;
+import topkgraphpattern.TopkGraphPatterns;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,27 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
-
-import com.beust.jcommander.JCommander;
-import fullydynamic.FullyDynamicSubgraphReservoirFourNode;
-import fullydynamic.FullyDynamicExhaustiveCountingFourNode;
-import gnu.trove.map.hash.THashMap;
-import fullydynamic.FullyDynamicEdgeReservoirFourNode;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-
-import incremental.IncrementalExhaustiveCountingFourNode;
-import incremental.IncrementalSubgraphReservoirFourNode;
-import incremental.IncrementalEdgeReservoirFourNode;
-import input.InputParameters;
-import input.StreamEdge;
-import input.StreamEdgeReader;
-import slidingwindow.FixedSizeSlidingWindow;
-import struct.NodeMap;
-import topkgraphpattern.Pattern;
-import topkgraphpattern.TopkGraphPatterns;
-import utility.EdgeHandler;
 
 /*
  * The main class to run different algorithms
@@ -51,39 +46,31 @@ import utility.EdgeHandler;
  * reservoir k: integer (parameter for the top-k algorithm)
  */
 
-public class main {
+public class Application {
+
+    private static final String sep = ",";
+
     public static void main(String args[]) throws IOException {
+        InputParameters inputParameters = readInputParameters(args);
+        BufferedReader bufferedReader = getInputBufferedReader(inputParameters);
+        TopkGraphPatterns topkGraphPattern = getTopkGraphPatterns(inputParameters);
+        readAndProcess(inputParameters, bufferedReader, topkGraphPattern);
+        writeOutput(inputParameters, topkGraphPattern);
+        bufferedReader.close();
+    }
+
+    public static InputParameters readInputParameters(String args[]) {
         InputParameters input = new InputParameters();
         JCommander.newBuilder().addObject(input).build().parse(args);
 
         System.out.println("simulator type: " + input.getSimulatorType() + " window size: " + input.getWindowSize() + " epsilon: " + input.getEpsilon()
                 + " delta: " + input.getDelta() + " Tk: " + input.getTk() + "k: " + input.getK());
 
-        String sep = ",";
-        String inFileName = input.getDirectory() + input.getInputFileName();
+        return input;
+    }
 
-        // input file reader
-        BufferedReader in = null;
-
-        try {
-            InputStream rawin = new FileInputStream(inFileName);
-            if (inFileName.endsWith(".gz"))
-                rawin = new GZIPInputStream(rawin);
-            in = new BufferedReader(new InputStreamReader(rawin));
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found");
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        StreamEdgeReader reader = new StreamEdgeReader(in, sep);
-        StreamEdge edge = reader.nextItem();
-        FixedSizeSlidingWindow sw = new FixedSizeSlidingWindow(input.getWindowSize());
-
-        // declare object of the algorithm interface
+    private static TopkGraphPatterns getTopkGraphPatterns(InputParameters input) {
         TopkGraphPatterns topkGraphPattern = null;
-        long startTime = System.currentTimeMillis();
-
         if (input.getSimulatorType() == 0) {
             topkGraphPattern = new IncrementalExhaustiveCountingFourNode();
         } else if (input.getSimulatorType() == 1) {
@@ -117,82 +104,29 @@ public class main {
             int size = (int) (Tkk * epsilonk);
             System.out.println("size of the reservoir: " + size);
             topkGraphPattern = new FullyDynamicEdgeReservoirFourNode(size, input.getK());
-        } else if (input.getSimulatorType() == 6) {
-            int edgeCount = 0;
-            final int PRINT_AFTER = 100000;
-            EdgeHandler utility = new EdgeHandler();
-            NodeMap nodeMap = new NodeMap();
-            int min = Integer.MAX_VALUE;
-            int max = Integer.MIN_VALUE;
-            while (edge != null) {
-                int src = edge.getSource();
-                int dst = edge.getDestination();
+        }
+        return topkGraphPattern;
+    }
 
-                if (src < min) {
-                    min = src;
-                }
-                if (dst < min) {
-                    min = dst;
-                }
-                if (src > max) {
-                    max = src;
-                }
-                if (dst > max) {
-                    max = dst;
-                }
-                utility.handleEdgeAddition(edge, nodeMap);
+    private static BufferedReader getInputBufferedReader(InputParameters input) throws IOException {
+        String inFileName = input.getDirectory() + input.getInputFileName();
 
-                edge = reader.nextItem();
-                edgeCount++;
-
-                if (edgeCount % PRINT_AFTER == 0) {
-                    System.out.println(String.format("%dM\t\t%d", (edgeCount / PRINT_AFTER),
-                            ((System.currentTimeMillis() - startTime) / 1000)));
-                }
-
-            }
-            System.out.println(min + " " + max);
+        BufferedReader in = null;
+        // input file reader
+        try {
+            InputStream rawin = new FileInputStream(inFileName);
+            if (inFileName.endsWith(".gz"))
+                rawin = new GZIPInputStream(rawin);
+            in = new BufferedReader(new InputStreamReader(rawin));
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found");
+            e.printStackTrace();
             System.exit(1);
         }
+        return in;
+    }
 
-        /*
-         * read from the edge list each line in the file represents a tuple of the form
-         * <source-id,source-label,dest-id,dest-label,edge-label>
-         */
-
-        System.out.println("edges(k)\t\tsecs(s)\t\tpatterns(#)\t\treservoir-size(curr)");
-
-        long edgeCount = 1;
-        long PRINT_AFTER = 100000;
-        long PRODUCE_SNAPSHOT_AFTER = 1_000_000;
-        int index = 0;
-        while (edge != null) {
-            topkGraphPattern.addEdge(edge);
-            // System.out.println("+ " + edge);
-
-            // slide the window and get the last item if the window is full
-            if (isFullyDynamicAlgorithm(input.getSimulatorType())) {
-                Optional<StreamEdge> oldestEdge = sw.add(edge);
-                if (oldestEdge.isPresent()) {
-                    // System.out.println("- " + oldestEdge);
-                    topkGraphPattern.removeEdge(oldestEdge.get());
-                }
-
-            }
-            edge = reader.nextItem();
-            edgeCount++;
-
-            if (edgeCount % PRINT_AFTER == 0) {
-                // System.out.println(String.format("%d", ((System.currentTimeMillis() -
-                // startTime)/1000)));
-                System.out.println(String.format("%d\t\t%d\t\t%d\t\t%d", (edgeCount / 1000),
-                        ((System.currentTimeMillis() - startTime) / 1000),
-                        topkGraphPattern.getFrequentPatterns().size(), topkGraphPattern.getCurrentReservoirSize()));
-            }
-        }
-        long endTime = System.currentTimeMillis();
-        System.out.println("execution time: " + (endTime - startTime) / (double) 1000 + " secs.");
-
+    private static void writeOutput(InputParameters input, TopkGraphPatterns topkGraphPattern) throws IOException {
         // create the output file name
         String outFileName = input.getOutputDirectory() + "/output_" + input.getInputFileName() + "_" + input.getWindowSize() + "_" + input.getEpsilon() + "_" + input.getDelta() + "_"
                 + input.getTk() + "_" + input.getK();
@@ -221,6 +155,47 @@ public class main {
         bw.flush();
         bw.close();
         System.out.println(topkGraphPattern.getNumberofSubgraphs());
+    }
+
+    /**
+     * read from the edge list each line in the file represents a tuple of the form
+     * <source-id,source-label,dest-id,dest-label,edge-label>
+     **/
+    private static void readAndProcess(InputParameters input, BufferedReader in, TopkGraphPatterns topkGraphPattern) throws IOException {
+        long edgeCount = 1;
+        long PRINT_AFTER = 100000;
+
+        FixedSizeSlidingWindow sw = new FixedSizeSlidingWindow(input.getWindowSize());
+
+        System.out.println("edges(k)\t\tsecs(s)\t\tpatterns(#)\t\treservoir-size(curr)");
+
+        long startTime = System.currentTimeMillis();
+
+        StreamEdgeReader reader = new StreamEdgeReader(in, sep);
+
+        StreamEdge edge = reader.nextItem();
+        while (edge != null) {
+            topkGraphPattern.addEdge(edge);
+
+            // slide the window and get the last item if the window is full
+            if (isFullyDynamicAlgorithm(input.getSimulatorType())) {
+                Optional<StreamEdge> oldestEdge = sw.add(edge);
+                if (oldestEdge.isPresent()) {
+                    topkGraphPattern.removeEdge(oldestEdge.get());
+                }
+
+            }
+            edge = reader.nextItem();
+            edgeCount++;
+
+            if (edgeCount % PRINT_AFTER == 0) {
+                System.out.println(String.format("%d\t\t%d\t\t%d\t\t%d", (edgeCount / 1000),
+                        ((System.currentTimeMillis() - startTime) / 1000),
+                        topkGraphPattern.getFrequentPatterns().size(), topkGraphPattern.getCurrentReservoirSize()));
+            }
+        }
+        long endTime = System.currentTimeMillis();
+        System.out.println("execution time: " + (endTime - startTime) / (double) 1000 + " secs.");
 
     }
 
