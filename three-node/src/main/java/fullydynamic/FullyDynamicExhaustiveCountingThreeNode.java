@@ -7,6 +7,8 @@ import input.StreamEdge;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Triplet;
+import support.MapSupportCount;
+import support.SupportCount;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
@@ -18,14 +20,14 @@ public class FullyDynamicExhaustiveCountingThreeNode implements TopkGraphPattern
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	THashMap<Triplet, Long> counter;
-	THashMap<Pattern, Long> frequentPatterns;
+	SupportCount supportCount;
 	int numSubgraph;
 	public FullyDynamicExhaustiveCountingThreeNode() {
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		counter = new THashMap<>();
 		numSubgraph = 0 ;
-		frequentPatterns = new THashMap<Pattern, Long>();
+		supportCount = new MapSupportCount();
 	}
 	@Override
 	public boolean addEdge(StreamEdge edge) {
@@ -161,28 +163,17 @@ public class FullyDynamicExhaustiveCountingThreeNode implements TopkGraphPattern
 	
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if(frequentPatterns.containsKey(p)) {
-			long count = frequentPatterns.get(p);
-			frequentPatterns.put(p, count+1);
-		}else {
-			frequentPatterns.put(p, 1l);
-		}
+		supportCount.add(p);
 	}
 	
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if(frequentPatterns.containsKey(p)) {
-			long count = frequentPatterns.get(p);
-			if(count >1)
-				frequentPatterns.put(p, count-1);
-			else 
-				frequentPatterns.remove(p);
-		}
+		supportCount.remove(p);
 	}
 	
 	@Override
 	public THashMap<Pattern, Long> getFrequentPatterns() {
-		return this.frequentPatterns;
+		return this.supportCount.getPatternCount();
 	}
 	@Override
 	public long getNumberofSubgraphs() {
@@ -194,7 +185,7 @@ public class FullyDynamicExhaustiveCountingThreeNode implements TopkGraphPattern
 	}
 	@Override
 	public THashMap<Pattern, Long> correctEstimates() {
-		return frequentPatterns;
+		return supportCount.getPatternCount();
 	}
 	
 	

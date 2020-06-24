@@ -115,20 +115,4 @@ public class CombinationGenerator<E>
 		}
     	return newCombs;
     }
-    
-    
-    public static void main(String[] args) 
-    {
-    	ArrayList<Integer> prevLabels = new ArrayList<Integer>();
-    	prevLabels.add(5);prevLabels.add(2);prevLabels.add(7);prevLabels.add(1);
-    	
-    	
-    	ArrayList<String> combs= getNewCombinations(prevLabels, 4);
-    	for (int i = 0; i < combs.size(); i++) 
-    	{
-			System.out.println(combs.get(i));
-		}
-        
-        
-    }
 }

@@ -17,38 +17,17 @@ You should have received a copy of the GNU Lesser General Public License
 along with Grami.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package Dijkstra;
+package dijkstra;
 
-import java.awt.Point;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Timer;
-
-import automorphism.Automorphism;
-
-import CSP.ConstraintGraph;
-import CSP.DFSSearch;
-
-import pruning.SPpruner;
 
 import search.Searcher;
-import statistics.DistinctLabelStat;
 
 import utilities.CommandLineParser;
-import utilities.DfscodesCache;
 import utilities.Settings;
 import utilities.StopWatch;
 
-import dataStructures.DFSCode;
 import dataStructures.DFScodeSerializer;
-import dataStructures.Graph;
-import dataStructures.HPListGraph;
-import dataStructures.Query;
-import decomposer.Decomposer;
 
 public class main {
 	

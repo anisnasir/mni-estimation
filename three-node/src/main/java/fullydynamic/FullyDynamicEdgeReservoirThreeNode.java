@@ -9,6 +9,8 @@ import reservoir.EdgeReservoir;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Triplet;
+import support.MapSupportCount;
+import support.SupportCount;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.SubgraphType;
 import topkgraphpattern.TopkGraphPatterns;
@@ -24,7 +26,7 @@ public class FullyDynamicEdgeReservoirThreeNode implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	THashMap<Pattern, Long> frequentPatterns;
+	SupportCount supportCount;
 	int k ;
 	int M;
 	int N;
@@ -44,7 +46,7 @@ public class FullyDynamicEdgeReservoirThreeNode implements TopkGraphPatterns{
 		this.c1 = 0;
 		this.c2 = 0;
 		this.numSubgraphs  = 0 ;
-		frequentPatterns = new THashMap<Pattern, Long>();
+		supportCount = new MapSupportCount();
 	}
 	@Override
 	public boolean addEdge(StreamEdge edge) {
@@ -184,28 +186,17 @@ public class FullyDynamicEdgeReservoirThreeNode implements TopkGraphPatterns{
 	}
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if(frequentPatterns.containsKey(p)) {
-			Long count = frequentPatterns.get(p);
-			frequentPatterns.put(p, count+1);
-		}else {
-			frequentPatterns.put(p, 1l);
-		}
+		supportCount.add(p);
 	}
 
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if(frequentPatterns.containsKey(p)) {
-			long count = frequentPatterns.get(p);
-			if(count >1)
-				frequentPatterns.put(p, count-1);
-			else 
-				frequentPatterns.remove(p);
-		}
+		supportCount.remove(p);
 	}
 
 	@Override
 	public THashMap<Pattern, Long> getFrequentPatterns() {
-		return this.frequentPatterns;
+		return this.supportCount.getPatternCount();
 	}
 
 	void initializeHypergeometricDistribution() {
@@ -219,6 +210,7 @@ public class FullyDynamicEdgeReservoirThreeNode implements TopkGraphPatterns{
 		initializeHypergeometricDistribution();
 		double wedgeCorrectFactor = correctFactorWedge();
 		double triangleCorrectFactor = correctFactorTriangle();
+		THashMap<Pattern, Long> frequentPatterns = this.supportCount.getPatternCount();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for(Pattern p: patterns) {
 			long count = frequentPatterns.get(p);

@@ -8,6 +8,8 @@ import reservoir.EdgeReservoir;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Triplet;
+import support.MapSupportCount;
+import support.SupportCount;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
@@ -21,7 +23,7 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	THashMap<Pattern, Long> frequentPatterns;
+	SupportCount supportCount;
 	int k;
 	int reservoirSize;
 	int numEdges;
@@ -33,7 +35,7 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 		this.k = k;
 		this.reservoirSize = size;
 		this.numEdges = 0;
-		frequentPatterns = new THashMap<Pattern, Long>();
+		supportCount = new MapSupportCount();
 	}
 
 	@Override
@@ -168,28 +170,17 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 
 	void addFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if (frequentPatterns.containsKey(p)) {
-			Long count = frequentPatterns.get(p);
-			frequentPatterns.put(p, count + 1);
-		} else {
-			frequentPatterns.put(p, 1l);
-		}
+		supportCount.add(p);
 	}
 
 	void removeFrequentPattern(Triplet t) {
 		ThreeNodeGraphPattern p = new ThreeNodeGraphPattern(t);
-		if (frequentPatterns.containsKey(p)) {
-			Long count = frequentPatterns.get(p);
-			if (count > 1)
-				frequentPatterns.put(p, count - 1);
-			else
-				frequentPatterns.remove(p);
-		}
+		supportCount.remove(p);
 	}
 
 	@Override
 	public THashMap<Pattern, Long> getFrequentPatterns() {
-		return this.frequentPatterns;
+		return this.supportCount.getPatternCount();
 	}
 
 	@Override
@@ -197,6 +188,7 @@ public class IncrementalEdgeReservoirThreeNode implements TopkGraphPatterns {
 		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		double wedgeCorrectFactor = correctFactorWedge();
 		double triangleCorrectFactor = correctFactorTriangle();
+		THashMap<Pattern, Long> frequentPatterns = this.supportCount.getPatternCount();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for (Pattern pattern : patterns) {
 			ThreeNodeGraphPattern p = (ThreeNodeGraphPattern) pattern;

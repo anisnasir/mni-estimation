@@ -7,6 +7,8 @@ import input.StreamEdge;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Triplet;
+import support.MapSupportCount;
+import support.SupportCount;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.Subgraph;
 import topkgraphpattern.TopkGraphPatterns;
@@ -19,14 +21,14 @@ public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	THashMap<Subgraph, Long> counter;
-	THashMap<Pattern, Long> frequentPatterns;
+	SupportCount supportCount;
 	long numSubgraph;
 
 	public IncrementalExhaustiveCountingThreeNode() {
 		utility = new EdgeHandler();
 		counter = new THashMap<Subgraph, Long>();
 		numSubgraph = 0;
-		frequentPatterns = new THashMap<Pattern, Long>();
+		this.supportCount = new MapSupportCount();
 		this.nodeMap = new NodeMap();
 	}
 
@@ -97,28 +99,17 @@ public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns
 
 	void addFrequentPattern(Triplet t) {
 		Pattern p = new ThreeNodeGraphPattern(t);
-		if (frequentPatterns.containsKey(p)) {
-			Long count = frequentPatterns.get(p);
-			frequentPatterns.put(p, count + 1);
-		} else {
-			frequentPatterns.put(p, 1l);
-		}
+		supportCount.add(p);
 	}
 
 	void removeFrequentPattern(Triplet t) {
 		Pattern p = new ThreeNodeGraphPattern(t);
-		if (frequentPatterns.containsKey(p)) {
-			Long count = frequentPatterns.get(p);
-			if (count > 1)
-				frequentPatterns.put(p, count - 1);
-			else
-				frequentPatterns.remove(p);
-		}
+		supportCount.remove(p);
 	}
 
 	@Override
 	public THashMap<Pattern, Long> getFrequentPatterns() {
-		return this.frequentPatterns;
+		return this.supportCount.getPatternCount();
 	}
 
 	@Override
@@ -139,7 +130,7 @@ public class IncrementalExhaustiveCountingThreeNode implements TopkGraphPatterns
 
 	@Override
 	public THashMap<Pattern, Long> correctEstimates() {
-		return frequentPatterns;
+		return this.supportCount.getPatternCount();
 		
 	}
 

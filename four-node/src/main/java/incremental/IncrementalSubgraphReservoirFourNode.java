@@ -12,6 +12,8 @@ import reservoir.AdvancedSubgraphReservoir;
 import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Quadriplet;
+import support.MapSupportCount;
+import support.SupportCount;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.TopkGraphPatterns;
 import utility.EdgeHandler;
@@ -26,7 +28,7 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 	Random rand;
 	QuadripletGenerator subgraphGenerator;
 
-	THashMap<Pattern, Long> frequentPatterns;
+	SupportCount supportCount;
 	long numSubgraphs; // total number of subgraphs
 	int reservoirSize; // maximum reservoir size
 	AlgorithmZ skipRS;
@@ -41,7 +43,7 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 		reservoir = new AdvancedSubgraphReservoir<Quadriplet>();
 		numSubgraphs = 0;
 		reservoirSize = size;
-		frequentPatterns = new THashMap<Pattern, Long>();
+		supportCount = new MapSupportCount();
 		skipRS = new AlgorithmZ(reservoirSize);
 	}
 
@@ -125,33 +127,24 @@ public class IncrementalSubgraphReservoirFourNode implements TopkGraphPatterns {
 
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		if (frequentPatterns.containsKey(p)) {
-			Long count = frequentPatterns.get(p);
-			frequentPatterns.put(p, count+1);
-		} else {
-			frequentPatterns.put(p, 1l);
-		}
+		supportCount.add(p);
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		Long count = frequentPatterns.get(p);
-		if (count > 1) {
-			frequentPatterns.put(p, count - 1);
-		} else {
-			frequentPatterns.remove(p);
-		}
+		supportCount.remove(p);
 	}
 
 	@Override
 	public THashMap<Pattern, Long> getFrequentPatterns() {
-		return this.frequentPatterns;
+		return this.supportCount.getPatternCount();
 	}
 
 	@Override
 	public THashMap<Pattern, Long> correctEstimates() {
 		THashMap<Pattern, Long> correctFrequentPatterns = new THashMap<Pattern, Long>();
 		double correctFactor = correctFactor();
+		THashMap<Pattern, Long> frequentPatterns = supportCount.getPatternCount();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for (Pattern p : patterns) {
 			long count = frequentPatterns.get(p);

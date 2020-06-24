@@ -13,6 +13,8 @@ import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Quadriplet;
 import struct.Triplet;
+import support.MapSupportCount;
+import support.SupportCount;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.SubgraphType;
 import topkgraphpattern.TopkGraphPatterns;
@@ -23,7 +25,7 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 	NodeMap nodeMap;
 	EdgeHandler utility;
 	EdgeReservoir<StreamEdge> reservoir;
-	THashMap<Pattern, Long> frequentPatterns;
+	SupportCount supportCount;
 	int k ;
 	int M;
 	int N;
@@ -45,7 +47,7 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 		this.c1 = 0;
 		this.c2 = 0;
 		this.numSubgraphs  = 0 ;
-		frequentPatterns = new THashMap<Pattern, Long>();
+		this.supportCount = new MapSupportCount();
 	}
 	@Override
 	public boolean addEdge(StreamEdge edge) {
@@ -158,28 +160,17 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 	}
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		if(frequentPatterns.containsKey(p)) {
-			long count = frequentPatterns.get(p);
-			frequentPatterns.put(p, count+1);
-		}else {
-			frequentPatterns.put(p, 1l);
-		}
+		supportCount.add(p);
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		if(frequentPatterns.containsKey(p)) {
-			long count = frequentPatterns.get(p);
-			if(count >1)
-				frequentPatterns.put(p, count-1);
-			else 
-				frequentPatterns.remove(p);
-		}
+		supportCount.remove(p);
 	}
 
 	@Override
 	public THashMap<Pattern, Long> getFrequentPatterns() {
-		return this.frequentPatterns;
+		return this.supportCount.getPatternCount();
 	}
 
 	/*void initializeHypergeometricDistribution() {
@@ -196,7 +187,8 @@ public class FullyDynamicEdgeReservoirFourNode implements TopkGraphPatterns{
 		double tailedTriangleAndCircleCorrectFactor = correctFactorTailedTriangleAndCircle();
 		double quasiCliqueCorrectFactor = correctFactorQuasiClique();
 		double cliqueCorrectFactor = correctFactorClique();
-		
+
+		THashMap<Pattern, Long> frequentPatterns = this.supportCount.getPatternCount();
 		List<Pattern> patterns = new ArrayList<Pattern>(frequentPatterns.keySet());
 		for (Pattern pattern : patterns) {
 			FourNodeGraphPattern p = (FourNodeGraphPattern) pattern;

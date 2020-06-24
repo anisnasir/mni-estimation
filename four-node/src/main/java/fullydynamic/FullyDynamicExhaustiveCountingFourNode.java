@@ -10,6 +10,8 @@ import struct.LabeledNode;
 import struct.NodeMap;
 import struct.Quadriplet;
 import struct.Triplet;
+import support.MapSupportCount;
+import support.SupportCount;
 import topkgraphpattern.Pattern;
 import topkgraphpattern.SubgraphType;
 import topkgraphpattern.TopkGraphPatterns;
@@ -19,7 +21,7 @@ import utility.QuadripletGenerator;
 public class FullyDynamicExhaustiveCountingFourNode implements TopkGraphPatterns {
 	NodeMap nodeMap;
 	EdgeHandler utility;
-	THashMap<Pattern, Long> frequentPatterns;
+	SupportCount supportCount;
 	int numSubgraph;
 	QuadripletGenerator subgraphGenerator;
 
@@ -27,7 +29,7 @@ public class FullyDynamicExhaustiveCountingFourNode implements TopkGraphPatterns
 		this.nodeMap = new NodeMap();
 		utility = new EdgeHandler();
 		numSubgraph = 0;
-		frequentPatterns = new THashMap<Pattern, Long>();
+		supportCount = new MapSupportCount();
 	}
 
 	@Override
@@ -123,28 +125,17 @@ public class FullyDynamicExhaustiveCountingFourNode implements TopkGraphPatterns
 
 	void addFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		if (frequentPatterns.containsKey(p)) {
-			long count = frequentPatterns.get(p);
-			frequentPatterns.put(p, count + 1);
-		} else {
-			frequentPatterns.put(p, 1l);
-		}
+		supportCount.add(p);
 	}
 
 	void removeFrequentPattern(Quadriplet t) {
 		FourNodeGraphPattern p = new FourNodeGraphPattern(t);
-		if (frequentPatterns.containsKey(p)) {
-			long count = frequentPatterns.get(p);
-			if (count > 1)
-				frequentPatterns.put(p, count - 1);
-			else
-				frequentPatterns.remove(p);
-		}
+		supportCount.remove(p);
 	}
 
 	@Override
 	public THashMap<Pattern, Long> getFrequentPatterns() {
-		return this.frequentPatterns;
+		return this.supportCount.getPatternCount();
 	}
 
 	@Override
@@ -159,7 +150,7 @@ public class FullyDynamicExhaustiveCountingFourNode implements TopkGraphPatterns
 
 	@Override
 	public THashMap<Pattern, Long> correctEstimates() {
-		return frequentPatterns;
+		return this.supportCount.getPatternCount();
 		
 	}
 
