@@ -57,7 +57,7 @@ public class Application {
         readAndProcess(input, in, topkGraphPattern);
 
         writeOutput(input, topkGraphPattern);
-        
+
         in.close();
     }
 

@@ -30,27 +30,22 @@ import java.util.zip.GZIPInputStream;
  * reservoir k: integer (parameter for the top-k algorithm)
  */
 
-public class main {
+public class Application {
+    private static final String sep = ",";
     public static void main(String args[]) throws IOException {
         String inFileName = "/Users/anasir/Datasets/patents/patent-graph-stream.txt";
 
         NodeMap nodeMap = new NodeMap();
         EdgeHandler edgeHandler = new EdgeHandler();
-        // input file reader
-        BufferedReader in = null;
-        String sep = ",";
+        BufferedReader in = getBufferedReader(inFileName);
 
-        try {
-            InputStream rawin = new FileInputStream(inFileName);
-            if (inFileName.endsWith(".gz"))
-                rawin = new GZIPInputStream(rawin);
-            in = new BufferedReader(new InputStreamReader(rawin));
-        } catch (FileNotFoundException e) {
-            System.err.println("File not found");
-            e.printStackTrace();
-            System.exit(1);
-        }
+        readAndProcess(nodeMap, edgeHandler, in);
+        in.close();
 
+
+    }
+
+    private static void readAndProcess(NodeMap nodeMap, EdgeHandler edgeHandler, BufferedReader in) throws IOException {
         StreamEdgeReader reader = new StreamEdgeReader(in, sep);
         StreamEdge edge = reader.nextItem();
         int edgeCount = 0;
@@ -63,8 +58,22 @@ public class main {
             edgeHandler.handleEdgeAddition(edge, nodeMap);
             edge = reader.nextItem();
         }
-        in.close();
+    }
 
+    private static BufferedReader getBufferedReader(String inFileName) throws IOException {
+        // input file reader
+        BufferedReader in = null;
 
+        try {
+            InputStream rawin = new FileInputStream(inFileName);
+            if (inFileName.endsWith(".gz"))
+                rawin = new GZIPInputStream(rawin);
+            in = new BufferedReader(new InputStreamReader(rawin));
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        return in;
     }
 }
